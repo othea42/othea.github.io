@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boutique en Ligne</title>
+
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        header {
+            color: white;
+            padding: 80px 15px;
+            text-align: center;
+            background-image: url('https://www.wonderbox.fr/blog/wp-content/uploads/sites/4/2023/08/macarons-couleurs.jpeg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        header h1 {
+            position: relative;
+            z-index: 2;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #733D29;
+        }
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+        }
+        nav a:hover {
+            background: #D98F4E;
+            color: #111;
+        }
+        nav a.active {
+            background: #D98F4E;
+            color: #111;
+        }
+        .container {
+            display: none;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+        .container.active {
+            display: block;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        /* Overlay on hover: composition text */
+        .product { position: relative; }
+        .product .img-wrapper { position: relative; display: block; width:100%; }
+        .product .img-wrapper img { display:block; width:100%; height:220px; object-fit:cover; border-radius:6px; }
+        .product .overlay {
+            position: absolute;
+            inset: 0; /* fill wrapper */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 12px;
+            background: rgba(0,0,0,0.62);
+            color: #fff;
+            opacity: 0;
+            transition: opacity 180ms ease, transform 180ms ease;
+            border-radius: 6px;
+            z-index: 3;
+            pointer-events: none;
+            transform: translateY(6px);
+        }
+        .product .img-wrapper:hover .overlay,
+        .product .img-wrapper:focus-within .overlay {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .product .overlay .desc {
+            font-size: 0.95rem;
+            line-height: 1.3;
+        }
+        .product img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        .product h3 {
+            margin: 10px 0 5px 0;
+            flex-grow: 0;
+        }
+        .product p {
+            margin: 5px 0 10px 0;
+            flex-grow: 0;
+        }
+        .product button {
+            margin-top: auto;
+            padding: 10px 15px;
+            background: #D98F4E;
+            color: #111;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+        }
+        .product button:hover {
+            background: #B87942;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.16);
+        }
+        .product button:focus-visible {
+            outline: 3px solid rgba(217,143,78,0.24);
+            outline-offset: 2px;
+        }
+        .accueil-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+        .accueil-hero {
+            width: 100%;
+            height: 360px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            /* Remplacez par votre image locale : _MG_6644-Modifier copie 2.JPG */
+            background-image: url('https://www.frandroid.com/wp-content/uploads/2020/09/samsung-tuto-patisserie-1111.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+        .accueil-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0,0,0,0.35);
+            z-index: 1;
+            border-radius: 8px;
+        }
+        @media (max-width: 768px) {
+            .accueil-hero {
+                height: 220px;
+            }
+        }
+        .accueil-text h2 {
+            color: #333;
+            font-size: 2em;
+            margin-top: 0;
+        }
+        .accueil-text p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        .accueil-text strong {
+            color: #d4a574;
+        }
+        @media (max-width: 768px) {
+            .accueil-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #733D29;
+            color: white;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Boutique en Ligne Othéa</h1>
+</header>
+
+<nav>
+    <a onclick="showPage('accueil')">Accueil</a>
+    <a onclick="showPage('choux')">Choux et Religieuses</a>
+    <a onclick="showPage('eclairs')">Éclairs et Friandises</a>
+    <a onclick="showPage('tartes')">Tartes et Mille-feuilles</a>
+    <a onclick="showPage('macarons')">Macarons et Gourmandises</a>
+    <a onclick="showPage('gateaux')">Gâteaux Entiers</a>
+    <a onclick="showPage('tablettes')">Tablette de chocolat</a>
+    <a onclick="showPage('panier')">Panier</a>
+    <a onclick="showPage('contact')">Contact</a>
+</nav>
+
+<div class="container active" id="accueil">
+    <div class="accueil-content">
+        <div class="accueil-text">
+            <h2>Bienvenue chez Othéa</h2>
+            <p>
+                Othéa, c’est l’histoire d’une reconversion guidée par la <strong>passion du goût</strong> et l’envie de créer des pâtisseries qui ont une âme. Nous imaginons des desserts fins et élégants, où chaque détail compte : des textures harmonieuses, des parfums subtils et des visuels soignés. Ici, chaque création raconte un savoir-faire en devenir, nourri par l’amour du métier et le plaisir simple de partager un instant sucré.
+
+            </p>
+            <p>
+                Nous sélectionnons les <strong>meilleurs ingrédients</strong> : beurre de qualité supérieure, chocolat premium, fruits frais de saison. 
+                Notre engagement est de vous offrir des saveurs authentiques et des produits faits avec le cœur.
+            </p>
+            <p>
+                Que ce soit pour <strong>une occasion spéciale, un cadeau gourmand ou un simple plaisir</strong>, découvrez notre large gamme de produits : 
+                pâtisseries fines, entremets délicieux, gâteaux de voyage et bien d'autres délices.
+            </p>
+            <p style="margin-top: 20px; font-style: italic;">
+                ✨ Profitez du <strong>click and collect</strong> sur Montbrison ✨
+            </p>
+        </div>
+        <div class="accueil-hero" role="img" aria-label="Pâtisserie Othéa"></div>
+    </div>
+</div>
+
+<div class="container" id="choux">
+    <h2>Choux et Religieuses</h2>
+    <div class="products">
+        <div class="product" data-composition="Pâte à choux, crème pralinée, praliné feuilleté">
+            <img src="https://media.hachette.fr/fit-in/750x488/5/2022-04/paris-brest-ludo.jpg" alt="Paris-Brest">
+            <h3>Paris-Brest</h3>
+            <p>6,90 €</p>
+            <div style="display:flex;gap:8px;justify-content:center;align-items:center;">
+                <button onclick="addToCart('Paris-Brest', 6.90)">Ajouter au panier</button>
+                <a href="https://buy.stripe.com/test_6oUbJ0ezr7DSbzd0tr7g401" target="_blank" rel="noopener" style="padding:8px 12px;background:#28a745;color:#fff;border-radius:6px;text-decoration:none;">Payer ce produit</a>
+            </div>
+        </div>
+        <div class="product" data-composition="Pâte à choux, crème pâtissière chocolat, glaçage chocolat">
+            <img src="https://www.dalloyau.fr/13825-large_default/religieuse-de-rever-chocolat-6-personnes.webp" alt="Religieuse au chocolat">
+            <h3>Religieuse au chocolat</h3>
+            <p>3,50 €</p>
+            <button onclick="addToCart('Religieuse au chocolat', 3.50)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Pâte à choux, crème diplomate vanille">
+            <img src="https://maisonperrotte.fr/img/modules/pwcooking/recipes/38.jpg" alt="Chou à la crème">
+            <h3>Chou à la crème</h3>
+            <p>3,20 €</p>
+            <button onclick="addToCart('Chou à la crème', 3.20)">Ajouter au panier</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="eclairs">
+    <h2>Éclairs et Friandises</h2>
+    <div class="products">
+        <div class="product" data-composition="Pâte à choux, crème pâtissière chocolat, glaçage chocolat">
+            <img src="https://www.condifa.fr/wp-content/uploads/ECLAIRS_CHOCOLAT_CAFE_CARRE.jpg" alt="Éclair au chocolat">
+            <h3>Éclair au chocolat</h3>
+            <p>4,50 €</p>
+            <button onclick="addToCart('Éclair au chocolat', 4.50)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Pâte à choux, crème pâtissière fraise, nappage fruit">
+            <img src="https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480/img/recipe/ras/Assets/FC26560A-2C69-4DE7-817B-6F8C0057C320/Derivates/6C86C73C-B04C-4D32-A11D-257E35AA4BD0.jpg" alt="Éclair à la fraise">
+            <h3>Éclair à la fraise</h3>
+            <p>4,50 €</p>
+            <button onclick="addToCart('Éclair à la fraise', 4.50)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Pâte à choux, crème pâtissière café, glaçage café">
+            <img src="https://www.condifa.fr/wp-content/uploads/ECLAIR-CAFE-Pur-Arabica-Chocolat-mof-stephane-glacier-sebalce-condifa.jpg" alt="Éclair au café">
+            <h3>Éclair au café</h3>
+            <p>4,50 €</p>
+            <button onclick="addToCart('Éclair au café', 4.50)">Ajouter au panier</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="tartes">
+    <h2>Tartes et Mille-feuilles</h2>
+    <div class="products">
+        <div class="product" data-composition="Feuilletage inversé, crème pâtissière vanille, sucre glace">
+            <img src="https://patissland.fr/cdn/shop/articles/recette-du-mille-feuille-traditionnel-patissland_f39e97f4-e4a6-4463-aed7-00cf0007488e.png?v=1742153468" alt="Mille-feuille">
+            <h3>Mille-feuille classique</h3>
+            <p>5,90 €</p>
+            <button onclick="addToCart('Mille-feuille classique', 5.90)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Pâte sablée, crème d'amande, fruits rouges frais">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBmXGSrTwqSNM_Oo5_OTX83tMcW2ZcDYBwrlzRt71Db-Bk4EPIiNIYrdm8yiOcvF9KLjJ7GHMbaVBiC_VXy00N-cVogotQqJq0C4TyAoeEKtGTxHPDiks5eTf2OM-GS75uwbrHvUPiKNI/s1600/tarte-aux-fruits-rouges.jpg" alt="Tarte aux fruits">
+            <h3>Tarte aux fruits rouges</h3>
+            <p>7,50 €</p>
+            <button onclick="addToCart('Tarte aux fruits rouges', 7.50)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Pâte sablée, crémeux citron, meringue suisse dorée">
+            <img src="https://www.latelierderoxane.com/blog/wp-content/uploads/img_1969-2-scaled.jpg" alt="Tarte au citron">
+            <h3>Tarte au citron meringuée</h3>
+            <p>6,50 €</p>
+            <button onclick="addToCart('Tarte au citron meringuée', 6.50)">Ajouter au panier</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="macarons">
+    <h2>Macarons et Petites Gourmandises</h2>
+    <div class="products">
+        <div class="product" data-composition="Coques amande, ganaches variées (chocolat, framboise, pistache)">
+            <img src="https://artisanpassionne.com/wp-content/uploads/2016/11/macarons-scaled.jpg" alt="Macarons assortis">
+            <h3>Macarons assortis (6 pièces)</h3>
+            <p>8,90 €</p>
+            <button onclick="addToCart('Macarons assortis (6 pièces)', 8.90)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Farine, beurre, sucre, pépites de chocolat">
+            <img src="https://assets.afcdn.com/recipe/20190529/93153_w1024h768c1cx2220cy1728cxt0cyt0cxb4441cyb3456.jpg" alt="Cookies artisanaux">
+            <h3>Cookies artisanaux (3 pièces)</h3>
+            <p>4,20 €</p>
+            <button onclick="addToCart('Cookies artisanaux (3 pièces)', 4.20)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Chocolat noir, beurre, œufs, sucre, noix (optionnel)">
+            <img src="https://www.hervecuisine.com/wp-content/uploads/2015/10/brownies-1024x683.jpg" alt="Brownies">
+            <h3>Brownies au chocolat (2 pièces)</h3>
+            <p>5,00 €</p>
+            <button onclick="addToCart('Brownies au chocolat (2 pièces)', 5.00)">Ajouter au panier</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="gateaux">
+    <h2>Gâteaux Entiers</h2>
+    <div class="products">
+        <div class="product">
+            <img src="https://l-herboriste.com/wp-content/uploads/2021/08/Forêt-noire.jpg 
+" alt="Forêt noire">
+            <h3>Forêt noire</h3>
+            <p>24,00 €</p>
+            <button onclick="addToCart('Forêt noire', 24.00)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Génoise légère, crème mousseline à la vanille, fraises fraîches">
+            <img src="https://liliebakery.fr/wp-content/uploads/2024/04/fraisier-lilie-bakery.jpg" alt="Fraisier">
+            <h3>Fraisier</h3>
+            <p>26,00 €</p>
+            <button onclick="addToCart('Fraisier', 26.00)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Génoise Joconde imbibée café, ganache chocolat, crème au beurre café">
+            <img src="https://encoreungateau.com/wp-content/uploads/2019/05/recette-facile-opera-cafe.jpg" alt="Opéra">
+            <h3>Opéra (café-chocolat)</h3>
+            <p>22,00 €</p>
+            <button onclick="addToCart('Opéra (café-chocolat)', 22.00)">Ajouter au panier</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="tablettes">
+    <h2>Tablette de chocolat</h2>
+    <div class="products">
+        <div class="product" data-composition="Chocolat au lait, praliné pistache croquant, sel de Guérande">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEju171uGPPG1IVMuHxnZYAxvsFtyOTBACupyFxbOZTaxDPuil485cGtd0KtLC9VClFEgJF1e3jJf9Fy2JDjZi0ANmPtnQqNAseNSGU8FRgDYxo6lL4rDXQ2ZxtwGs-FfQyFcpaC_m4r04YXtDHxjdX_B5ydqEI6pQuSoqW5hwS310Ykd2JghntkN92hWFg/w426-h640/Tablette%20de%20Duba%C3%AF-3.jpg" alt="Tablette Dubaï">
+            <h3>Tablette Dubaï</h3>
+            <p>6,50 €</p>
+            <button onclick="addToCart('Tablette Dubaï', 6.50)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Chocolat au lait, praliné noisette, croustillant">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjCxrAj3PyIpu4DCKReX55j096lOn4keJQ4Pis2knrTwbMbbJpfBj7mzPiT9ckMwtkNKE5N7tMcFR1vup-4L0ynSRLCvjz5U-dbV-kD2yAKsEgtpH624gQbZlF7hbrmFSnr649A5Fh8TLGyLB6QuYAIQf3ZMHkccLt1tJ9WyXqtIAdIyAOCbK8UST_ausA/s16000-rw/recette-tablette-kinder-bueno.jpg" alt="Tablette Bueno">
+            <h3>Tablette Bueno</h3>
+            <p>5,50 €</p>
+            <button onclick="addToCart('Tablette Bueno', 5.50)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Chocolat noir, insert framboise, éclats de fruits séchés">
+            <img src="https://www.lepetit-bain.fr/wp-content/uploads/2025/06/Tablette-Franui-framboises-chocolat-la-recette-tendance.jpg" alt="Tablette Framboise">
+            <h3>Tablette Framboise</h3>
+            <p>5,50 €</p>
+            <button onclick="addToCart('Tablette Framboise', 5.50)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Chocolat lait gianduja, caramel beurre salé">
+            <img src="https://www.zaninchocolatier.fr/media/cache/product_picture/2021/08/3713-tablette-lait-gianduja-caramel-3.jpg" alt="Tablette Citron">
+            <h3>Tablette Caramel</h3>
+            <p>5,50 €</p>
+            <button onclick="addToCart('Tablette Caramel', 5.50)">Ajouter au panier</button>
+        </div>
+        <div class="product" data-composition="Chocolat praliné, éclats de noisette, croustillant">
+            <img src="https://cdn.shopify.com/s/files/1/0848/8144/1079/files/Tablette_fourree_cassee_DEBAUVE___GALLAIS2118.jpg?v=1708350202" alt="Tablette Surprise">
+            <h3>Tablette Praliné</h3>
+            <p>5,50 €</p>
+            <button onclick="addToCart('Tablette praliné', 5.50)">Ajouter au panier</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="panier">
+    <h2>Votre Panier</h2>
+    <div id="cartItems">
+        <p>Votre panier est actuellement vide.</p>
+    </div>
+    <div id="checkoutArea" style="margin-top:16px;">
+        <button id="checkoutButton" onclick="createCheckoutSession()" style="padding:10px 14px;background:#2d6cdf;color:#fff;border:none;border-radius:6px;cursor:pointer;">Payer maintenant</button>
+        <a id="directLink" href="https://buy.stripe.com/test_fZuaEW4YR8HWfPt7VT7g400" target="_blank" rel="noopener" style="margin-left:8px;padding:10px 14px;background:#28a745;color:#fff;border:none;border-radius:6px;text-decoration:none;display:inline-block;">Payer (lien direct)</a>
+    </div>
+</div>
+
+<div class="container" id="contact">
+    <h2>Contact</h2>
+    <p>Email : contact@boutique.com</p>
+    <p>Téléphone : 01 23 45 67 89</p>
+</div>
+
+<footer>
+    © 2025 Boutique en Ligne - Tous droits réservés
+</footer>
+
+<script>
+// Fonction pour afficher/masquer les pages
+function showPage(pageId) {
+    // Masquer tous les conteneurs
+    const containers = document.querySelectorAll('.container');
+    containers.forEach(container => {
+        container.classList.remove('active');
+    });
+    
+    // Afficher le conteneur sélectionné
+    const activePage = document.getElementById(pageId);
+    if (activePage) {
+        activePage.classList.add('active');
+    }
+    
+    // Mettre à jour le style des onglets
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+// Panier dynamique
+let cart = [];
+
+// Mapping des produits vers des Payment Links Stripe (si vous avez créé un Payment Link par produit)
+const productPaymentLinks = {
+    'Paris-Brest': 'https://buy.stripe.com/test_6oUbJ0ezr7DSbzd0tr7g401',
+    'Macarons assortis (6 pièces)': 'https://buy.stripe.com/test_fZuaEW4YR8HWfPt7VT7g400'
+    // Ajoutez d'autres mappings ici : 'Nom du produit': 'https://buy.stripe.com/...' 
+};
+
+function addToCart(name, price) {
+    cart.push({ name, price });
+    renderCart();
+    showPage('panier');
+}
+
+function renderCart() {
+    const cartContainer = document.getElementById('cartItems');
+    if (!cart.length) {
+        cartContainer.innerHTML = '<p>Votre panier est actuellement vide.</p>';
+        document.getElementById('checkoutButton').disabled = true;
+        const dl = document.getElementById('directLink');
+        if (dl) { dl.style.opacity = '0.5'; dl.style.pointerEvents = 'none'; dl.setAttribute('aria-disabled','true'); }
+        return;
+    }
+
+    let html = '<ul>';
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        total += item.price;
+        html += `<li>${item.name} - ${item.price.toFixed(2)} € <button onclick="removeFromCart(${index})">Retirer</button></li>`;
+    });
+
+    html += `</ul><p><strong>Total : ${total.toFixed(2)} €</strong></p>`;
+    cartContainer.innerHTML = html;
+    document.getElementById('checkoutButton').disabled = false;
+    const dl = document.getElementById('directLink');
+    if (dl) { dl.style.opacity = '1'; dl.style.pointerEvents = 'auto'; dl.removeAttribute('aria-disabled'); }
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
+
+// Crée une session Stripe Checkout via l'endpoint serveur
+async function createCheckoutSession() {
+    if (!cart.length) return alert('Votre panier est vide');
+    // Si le panier contient exactement 1 article et qu'un Payment Link existe pour ce produit,
+    // rediriger directement vers ce lien (flux sans serveur).
+    if (cart.length === 1) {
+        const prodName = cart[0].name;
+        const link = productPaymentLinks[prodName];
+        if (link) {
+            // ouvrir le lien Stripe (nouvel onglet) — garde l'utilisateur dans votre boutique
+            window.open(link, '_blank');
+            return;
+        }
+    }
+
+    // Sinon, tenter d'utiliser l'endpoint serveur pour créer une session Checkout (nécessite Node/server)
+    const items = cart.map(i => ({ name: i.name, unit_amount: Math.round(i.price * 100), quantity: 1 }));
+    try {
+        const res = await fetch('/create-checkout-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items })
+        });
+        if (!res.ok) throw new Error('Serveur indisponible');
+        const data = await res.json();
+        if (data.url) {
+            window.location = data.url; // redirection vers Stripe Checkout
+        } else {
+            console.error('Erreur session:', data);
+            alert('Impossible de démarrer le paiement via le serveur. Si vous n\'avez pas de serveur, utilisez un Payment Link pour chaque produit ou installez Node pour activer le checkout centralisé.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Le serveur de paiement semble indisponible. Pour contourner :\n- Passez au paiement direct pour un seul article (bouton "Payer ce produit"),\n- Ou installez Node et démarrez le serveur d\'exemple pour permettre le paiement de plusieurs articles.');
+    }
+}
+
+// --- Upload d'image locale : aperçu et insertion dans la page ---
+const imageInput = document.getElementById('imageInput');
+const imagePreview = document.getElementById('imagePreview');
+const addPhotoBtn = document.getElementById('addPhotoBtn');
+
+if (imageInput) {
+    imageInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            if (imagePreview) {
+                imagePreview.src = ev.target.result;
+                imagePreview.style.display = 'block';
+            }
+            if (addPhotoBtn) {
+                addPhotoBtn.style.display = 'inline-block';
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function addPhotoToPage() {
+    if (!imagePreview || !imagePreview.src) return alert('Aucune image sélectionnée');
+    const accueil = document.getElementById('accueil');
+    if (!accueil) return alert('Section d\'accueil introuvable.');
+
+    const wrapper = document.createElement('div');
+    wrapper.style.marginTop = '16px';
+    wrapper.style.textAlign = 'center';
+
+    const img = document.createElement('img');
+    img.src = imagePreview.src;
+    img.alt = 'Photo ajoutée depuis votre Mac';
+    img.style.maxWidth = '100%';
+    img.style.borderRadius = '8px';
+    img.style.boxShadow = '0 4px 10px rgba(0,0,0,0.12)';
+
+    wrapper.appendChild(img);
+    const target = accueil.querySelector('.accueil-content');
+    if (target) target.appendChild(wrapper);
+
+    // Réinitialiser l'input et l'aperçu
+    if (addPhotoBtn) addPhotoBtn.style.display = 'none';
+    if (imageInput) imageInput.value = '';
+    if (imagePreview) { imagePreview.style.display = 'none'; imagePreview.src = ''; }
+}
+
+if (addPhotoBtn) addPhotoBtn.addEventListener('click', addPhotoToPage);
+
+// --- Overlay composition for product images ---
+function setupProductOverlays() {
+    const products = document.querySelectorAll('.product');
+    products.forEach(prod => {
+        const img = prod.querySelector('img');
+        if (!img) return;
+
+        // create wrapper only if not already wrapped
+        if (!img.parentElement.classList.contains('img-wrapper')) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'img-wrapper';
+            // copy image's display styles to wrapper if needed
+            img.parentElement.insertBefore(wrapper, img);
+            wrapper.appendChild(img);
+
+            // create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+
+            const desc = document.createElement('div');
+            desc.className = 'desc';
+            const composition = prod.dataset.composition || img.alt || 'Composition non disponible';
+            desc.textContent = composition;
+
+            overlay.appendChild(desc);
+            wrapper.appendChild(overlay);
+        }
+    });
+}
+
+// Initialiser au chargement de la page
+window.addEventListener('load', () => {
+    const navLinks = document.querySelectorAll('nav a');
+    if (navLinks.length > 0) {
+        navLinks[0].classList.add('active');
+    }
+    // initialiser l'état du panier (boutons de paiement)
+    renderCart();
+    // build overlays after DOM ready
+    if (typeof setupProductOverlays === 'function') setupProductOverlays();
+});
+</script>
+</body>
+</html>
